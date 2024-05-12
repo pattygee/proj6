@@ -8,8 +8,8 @@ class Graph():
     def  __init__(self,
             nodecount : None):
         self.nodecount = nodecount
-        self.degree = [[0 for i in range(nodecount)] for j in range(nodecount)]
-        self.adjacency = [[0 for i in range(nodecount)] for j in range(nodecount)]
+        self.degree = np.zeros((nodecount, nodecount))
+        self.adjacency = np.zeros((nodecount, nodecount))
 
     # Add an edge to the Laplacian matrix.
     # An edge is a pair [x,y].
@@ -20,7 +20,7 @@ class Graph():
        self.degree[y][y] += 1
        self.adjacency[x][y] += 1
        self.adjacency[y][x] += 1
-       self.laplacian = np.array([list(map(lambda x, y: x - y, self.degree[i], self.adjacency[i])) for i in range(self.nodecount)], dtype = np.single)
+       self.laplacian = np.subtract(self.degree, self.adjacency)
 
     # Don't change this - no need.
     def laplacianmatrix(self) -> np.array:
@@ -31,10 +31,12 @@ class Graph():
     # but make sure the first entry is positive.
     # If not, negate the whole thing.
     def fiedlervector(self) -> np.array:
-        # Replace this next line with your code.
-        fvec = [0]
-        # Return
-        return fvec
+        eigenvalues, eigenvectors = np.linalg.eig(self.laplacian)
+        f_val = np.sort(eigenvalues)[1]
+        f_val_index = np.where(eigenvalues == f_val)[0][0]
+        f_vec = eigenvectors[:, f_val_index]
+        return f_vec if f_vec[0] > 0 else -1 * f_vec
+        
 
     # Cluster the nodes.
     # You should return a list of two lists.
