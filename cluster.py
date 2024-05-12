@@ -8,17 +8,19 @@ class Graph():
     def  __init__(self,
             nodecount : None):
         self.nodecount = nodecount
-        # IMPORTANT!!!
-        # Replace the next line so the Laplacian is a nodecount x nodecount array of zeros.
-        # You will need to do this in order for the code to run!
-        self.laplacian = 1
+        self.degree = [[0 for i in range(nodecount)] for j in range(nodecount)]
+        self.adjacency = [[0 for i in range(nodecount)] for j in range(nodecount)]
 
     # Add an edge to the Laplacian matrix.
     # An edge is a pair [x,y].
     def addedge(self,edge):
-        # Your code goes here.
-        print('Filler code...')
-        # Nothing to return.
+       x = edge[0]
+       y = edge[1]
+       self.degree[x][x] += 1
+       self.degree[y][y] += 1
+       self.adjacency[x][y] += 1
+       self.adjacency[y][x] += 1
+       self.laplacian = np.array([list(map(lambda x, y: x - y, self.degree[i], self.adjacency[i])) for i in range(self.nodecount)], dtype = np.single)
 
     # Don't change this - no need.
     def laplacianmatrix(self) -> np.array:
